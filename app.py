@@ -194,4 +194,45 @@ if foto:
         # 1. TU UNICA CAJA ORIGINAL CON SU DISEÑO INTACTO
         st.text_area("Datos limpios (Filas y Columnas):", value=texto_macro, height=150, key="caja_macro_unica")
         
-        
+        # Inyección de código Javascript para que el botón actúe DIRECTAMENTE sobre TU CAJA ORIGINAL,
+        # sombree el texto de color rojo temporalmente, guarde en el portapapeles y limpie la selección.
+        st.html(f"""
+        <script>
+        function copiarYSombrear() {{
+            // Buscamos tu caja de texto original en la pantalla
+            const textareas = window.parent.document.querySelectorAll('textarea');
+            let miCaja = null;
+            textareas.forEach(t => {{
+                if(t.innerHTML.includes("{texto_macro.split('\\n')[0].strip()}")) {{
+                    miCaja = t;
+                }}
+            }});
+            
+            if (miCaja) {{
+                // Paso 1: Seleccionar y sombrear todo el texto dentro de tu caja
+                miCaja.focus();
+                miCaja.setSelectionRange(0, miCaja.value.length);
+                
+                // Paso 2: Cambiar el fondo a rojo para dar el aviso visual solicitado
+                miCaja.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+                miCaja.style.color = "#ffffff";
+                
+                // Paso 3: Guardar el texto formateado en el portapapeles del sistema
+                navigator.clipboard.writeText(miCaja.value).then(() => {{
+                    // Paso 4: Apagar el sombreado rojo después de un instante (800ms) y limpiar la selección
+                    setTimeout(() => {{
+                        miCaja.style.backgroundColor = "";
+                        miCaja.style.color = "";
+                        window.parent.getSelection().removeAllRanges();
+                    }}, 800);
+                }});
+            }} else {{
+                // Respaldo de copiado directo si no localiza el elemento visual
+                navigator.clipboard.writeText(`{texto_macro}`);
+            }}
+        }}
+        </script>
+        <button onclick="copiarYSombrear()" style="width:100%; padding:0.6rem; background-color:#9d4edd; color:white; border:none; border-radius:5px; font-family:'Orbitron',sans-serif; cursor:pointer; font-weight:bold; margin-top:10px;">
+            📋 COPIAR TODO AUTOMÁTICAMENTE
+        </button>
+        """)
