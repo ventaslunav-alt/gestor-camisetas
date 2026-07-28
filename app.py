@@ -183,7 +183,7 @@ if foto:
     
     with col1:
         # Usamos la 'tabla_limpia' para generar el CSV sin la basura
-        csv_excel = tabla_limpia.to_csv(index=False, sep=';', encoding='utf-8-sig')
+        csv_excel = tabla_limpia.to_csv(index=False, sep=';', header=False, encoding='utf-8-sig')
         st.download_button(
             label="📥 Descargar para Excel (.csv)",
             data=csv_excel,
