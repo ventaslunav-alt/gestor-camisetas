@@ -132,11 +132,16 @@ if foto:
                 modelo = genai.GenerativeModel('models/gemini-flash-latest')
                 
                 instruccion = """
-                Lee esta imagen de una lista de pedidos. Extrae 3 datos por fila: Nombre, Numero y Talla.
-                Ignora cualquier otro texto que no sea un jugador.
-                Escribe la respuesta estrictamente en este formato, separando por comas, sin usar markdown ni comillas:
+                Lee esta imagen de una lista de pedidos de camisetas deportivas.
+                Extrae exactamente 3 campos por fila: NOMBRE, NUMERO y TALLA.
+
+                REGLAS STRICTAS DE TRANSCRIPCIÓN:
+                1. CAMPO NOMBRE: Transcribe el nombre EXACTAMENTE como está escrito. Conserva de forma LITERAL cualquier número (ej. P3R3Z), símbolo (@, $, #, *), arroba o combinación rara dentro del nombre. NO autocorrijas, NO asumas errores ortográficos ni cambies caracteres.
+                2. CAMPO NUMERO: Corresponde únicamente al dorsal de la camiseta.
+                3. CAMPO TALLA: Corresponde a la medida (S, M, L, XL, etc.).
+                
+                Formato de salida estrictamente en CSV separado por comas, sin comillas ni markdown:
                 NOMBRE,NUMERO,TALLA
-                JUAN,10,M
                 """
                 
                 respuesta = modelo.generate_content([instruccion, img])
